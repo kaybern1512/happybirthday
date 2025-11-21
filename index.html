@@ -2102,7 +2102,10 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
         // ========== STARRY SKY ==========
         function createStars() {
             const starsLayer = document.getElementById('starsLayer');
-            const starCounts = { small: 150, medium: 80, large: 40, glow: 20 };
+            const isMobile = window.innerWidth <= 768;
+            const starCounts = isMobile 
+                ? { small: 50, medium: 25, large: 15, glow: 5 }
+                : { small: 150, medium: 80, large: 40, glow: 20 };
 
             Object.entries(starCounts).forEach(([type, count]) => {
                 for (let i = 0; i < count; i++) {
@@ -2129,11 +2132,13 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
         }
 
         function startShootingStars() {
+            const isMobile = window.innerWidth <= 768;
+            const interval = isMobile ? 8000 : 5000;
             setInterval(() => {
                 if (document.body.classList.contains('dark-mode')) {
                     createShootingStar();
                 }
-            }, 3000 + Math.random() * 5000);
+            }, interval + Math.random() * interval);
         }
 
         function createConstellations() {
@@ -2484,8 +2489,10 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
                 clearInterval(loveMessageInterval);
             }
             
+            const isMobile = window.innerWidth <= 768;
+            
             // Create initial messages
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < (isMobile ? 2 : 3); i++) {
                 setTimeout(() => createLoveMessage(), i * 1500);
             }
             
@@ -2496,7 +2503,7 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
                 } else {
                     clearInterval(loveMessageInterval);
                 }
-            }, 1200);
+            }, isMobile ? 2500 : 1500);
         }
 
         // ========== INITIALIZATION ==========
