@@ -13,6 +13,13 @@
             box-sizing: border-box;
         }
 
+        /* Tối ưu rendering cho mobile */
+        @media (max-width: 768px) {
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
@@ -64,6 +71,25 @@
             background: white;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Giảm box-shadow phức tạp trên mobile */
+        @media (max-width: 768px) {
+            .star {
+                box-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+            }
+            
+            .star.medium {
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+            }
+            
+            .star.large {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+            
+            .star.glow {
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+            }
         }
 
         .star.small {
@@ -178,6 +204,15 @@
             animation: moonGlow 6s infinite ease-in-out;
         }
 
+        /* Giảm moon animation trên mobile */
+        @media (max-width: 768px) {
+            .moon {
+                animation: none; /* Tắt animation */
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6),
+                            inset -15px -15px 20px rgba(139, 116, 0, 0.2);
+            }
+        }
+
         @keyframes moonGlow {
             0%, 100% { 
                 box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 
@@ -216,6 +251,26 @@
             top: 20%;
             filter: blur(40px);
             opacity: 0.6;
+        }
+
+        /* Tối ưu aurora cho mobile */
+        @media (max-width: 768px) {
+            .aurora-wave {
+                filter: blur(15px); /* Giảm blur từ 40px xuống 15px */
+                opacity: 0.3; /* Giảm opacity */
+            }
+            
+            /* Ẩn aurora wave thứ 3 trên mobile */
+            .aurora-wave-3 {
+                display: none;
+            }
+        }
+
+        /* Tắt hoàn toàn aurora trên màn hình nhỏ */
+        @media (max-width: 480px) {
+            .aurora-container {
+                display: none !important;
+            }
         }
 
         .aurora-wave-1 {
@@ -2104,8 +2159,8 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
             const starsLayer = document.getElementById('starsLayer');
             const isMobile = window.innerWidth <= 768;
             const starCounts = isMobile 
-                ? { small: 50, medium: 25, large: 15, glow: 5 }
-                : { small: 150, medium: 80, large: 40, glow: 20 };
+                ? { small: 30, medium: 15, large: 10, glow: 5 }  // Mobile: 60 sao
+                : { small: 150, medium: 80, large: 40, glow: 20 }; // Desktop: 290 sao
 
             Object.entries(starCounts).forEach(([type, count]) => {
                 for (let i = 0; i < count; i++) {
@@ -2133,7 +2188,11 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
 
         function startShootingStars() {
             const isMobile = window.innerWidth <= 768;
-            const interval = isMobile ? 8000 : 5000;
+            
+            // Tắt hoàn toàn shooting stars trên mobile
+            if (isMobile) return;
+            
+            const interval = 5000;
             setInterval(() => {
                 if (document.body.classList.contains('dark-mode')) {
                     createShootingStar();
@@ -2143,6 +2202,11 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
 
         function createConstellations() {
             const svg = document.querySelector('.constellation');
+            const isMobile = window.innerWidth <= 768;
+            
+            // Tắt hoàn toàn constellation trên mobile để tăng hiệu suất
+            if (isMobile) return;
+            
             const patterns = [
                 [[10, 20], [20, 15], [30, 25], [25, 35]],
                 [[70, 30], [75, 20], [85, 25], [80, 35]],
@@ -2204,9 +2268,12 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
         }
 
         function startBalloonStream() {
+            const isMobile = window.innerWidth <= 768;
+            const interval = isMobile ? 3000 : 1500; // Mobile: chậm hơn 2x
+            
             setInterval(() => {
                 createFloatingBalloon();
-            }, 1000 + Math.random() * 1000);
+            }, interval + Math.random() * interval);
         }
 
         // ========== PHOTO GALLERY WITH ENVELOPE BIRTHDAY CARD ==========
@@ -2491,9 +2558,9 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
             
             const isMobile = window.innerWidth <= 768;
             
-            // Create initial messages
-            for (let i = 0; i < (isMobile ? 2 : 3); i++) {
-                setTimeout(() => createLoveMessage(), i * 1500);
+            // Create initial messages - ít hơn trên mobile
+            for (let i = 0; i < (isMobile ? 1 : 3); i++) {
+                setTimeout(() => createLoveMessage(), i * 2000);
             }
             
             // Create new messages periodically
@@ -2503,7 +2570,7 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
                 } else {
                     clearInterval(loveMessageInterval);
                 }
-            }, isMobile ? 2500 : 1500);
+            }, isMobile ? 3500 : 1500); // Mobile: 3.5 giây/lần
         }
 
         // ========== INITIALIZATION ==========
@@ -2514,7 +2581,11 @@ Dù con đường phía trước có thế nào, anh luôn tin rằng em sẽ l�
             startBalloonStream();
             createPhotoGallery();
             
-            for (let i = 0; i < 5; i++) {
+            // Giảm số bong bóng ban đầu trên mobile
+            const isMobile = window.innerWidth <= 768;
+            const initialBalloons = isMobile ? 2 : 5;
+            
+            for (let i = 0; i < initialBalloons; i++) {
                 setTimeout(() => createFloatingBalloon(), i * 500);
             }
         });
